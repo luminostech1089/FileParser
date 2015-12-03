@@ -1,5 +1,5 @@
 # FileParser
-Python Module to parse log file and fetch desired lines
+FileParser is module developed in python to parse log file and fetch desired lines
 
 #Methods
 <b>searchLine(pattern, count=1, start_from=0, match=0)</b><br>
