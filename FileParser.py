@@ -36,6 +36,7 @@ class LogFile:
             self.line_no = 1
             self.offset = 0
             self.total_lines = sum(1 for line in self.file_obj)
+            self.file_obj.seek(0, 0) # move pointer to back to start
         except:
             raise Exception('Unable to open file [{}] in read mode'.format(filename))
 
