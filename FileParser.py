@@ -232,6 +232,12 @@ class LogFile:
         self.offset = pos
 
     def readline(self, lineno=None):
+        """
+        Function to read the current line. If line number is specified,
+        read the specified line.
+        :param lineno: Line number to read.
+        :return: String
+        """
         if lineno:
             self.goToLine(lineno)
         line = self.file_obj.readline()
