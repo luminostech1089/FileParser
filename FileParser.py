@@ -37,6 +37,7 @@ class LogFile:
             self.offset = 0
             self.total_lines = sum(1 for line in self.file_obj)
             self.file_obj.seek(0, 0) # move pointer to back to start
+            self.__scanner = None
         except:
             raise Exception('Unable to open file [{}] in read mode'.format(filename))
 
@@ -61,13 +62,14 @@ class LogFile:
         eof = False
         output = []
         match_pat = re.compile(pattern)
+        lineno = self.line_no
         while not eof and not isdone:
             prev = self.file_obj.tell()
             line = self.file_obj.readline()
             if not line:
                 eof = True
                 continue
-            self.line_no += 1
+            lineno += 1
             self.offset = self.file_obj.tell()
             if match:
                 ismatched = match_pat.match(line)
@@ -75,7 +77,7 @@ class LogFile:
                 ismatched = match_pat.search(line)
             if ismatched:
                 count -= 1
-                output.append((line, self.line_no - 1, prev))
+                output.append((line, lineno - 1, prev))
             if count == 0:
                 isdone = True
 
@@ -236,6 +238,25 @@ class LogFile:
         if line:  # If not EOF
             self.line_no += 1
         return line
+
+    def Scanner(self, lexicon):
+        """
+        Create scanner object an save in __scanner.
+        :param lexicon: Input to scanner as defined in re module.
+        :return: None
+        """
+        self.__scanner = re.Scanner(lexicon)
+
+    def Scan(self):
+        """
+        This is a generator scans file line by line an yields token and remainder.
+        Note: Refer python re module for more information.
+        :return: Token and remainder
+        """
+        line = self.file_obj.readline()
+        while line:
+            yield self.__scanner.scan(line)
+            line = self.file_obj.readline()
 
     @property
     def currentLineNo(self):
